@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Görev Kartı 2 - Kodla ve Simüle Et (Ortaokul)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Inter font for better readability */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* Arka Plan ve Merkezi Konumlandırma */
+        body {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+        
+        /* Tek Ekranlı Kompakt Kart */
+        .card-container {
+            background: white;
+            border-radius: 20px;
+            width: 95vw; 
+            max-width: 1200px; 
+            height: auto; 
+            max-height: 98vh; 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3); 
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto; 
+        }
+
+        /* Header Styling */
+        .header {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            padding: 20px 25px; 
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            border-bottom: 3px solid #e17055; 
+        }
+        
+        .time-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: white;
+            color: #e17055;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+            font-size: 13px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.3);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 14px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        /* Ana İçerik Alanı - Yatay Düzen */
+        .main-content {
+            padding: 25px;
+            display: flex;
+            gap: 20px;
+            flex-grow: 1; 
+        }
+
+        /* Paneller */
+        .left-panel {
+            flex: 1.2; 
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            border-right: 2px dashed #ccc;
+            padding-right: 15px;
+        }
+        .right-panel {
+            flex: 2; 
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Bölüm Başlıkları */
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #d63031; 
+            display: flex;
+            align-items: left-align;
+            gap: 8px;
+            padding-bottom: 5px;
+            margin-bottom: 5px;
+        }
+
+        /* İçerik Kutuları */
+        .info-box {
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 13px;
+            line-height: 1.5;
+            transition: all 0.3s ease; 
+        }
+        
+        .scenario-box {
+            background: #ffeaa7; 
+            border: 1px solid #fdcb6e; 
+        }
+        .mission-box {
+            background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);
+            color: white;
+            border: 2px solid #5f27cd; 
+        }
+
+        /* Düşünme Soruları ve Teslim Stilleri */
+        .questions-box {
+            background: #ffeaa7; 
+            border: 1px dashed #fdcb6e;
+        }
+        .delivery-box {
+            background: #e9e5ff; 
+            border-left: 5px solid #6c5ce7; 
+        }
+
+        .item-text {
+            padding: 3px 0;
+            padding-left: 20px;
+            position: relative;
+            font-size: 13px;
+            color: #4a4a4a;
+        }
+        .question-icon::before {
+            content: '💡';
+            position: absolute;
+            left: 0;
+            font-size: 12px;
+            color: #fdcb6e;
+        }
+        .delivery-icon::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            color: #f5576c; 
+        }
+        
+        /* Adım Kutuları (Right Panel) */
+        .step-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .step-item {
+            display: flex;
+            gap: 15px;
+            background: #f8f8f8;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 5px solid #fa709a; 
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+        
+        /* Adım Hover Efekti */
+        .step-item:hover {
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transform: translateX(3px); 
+        }
+
+        .step-number {
+            flex-shrink: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        .step-title {
+            font-weight: 700;
+            color: #333; 
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .data-box {
+            background: #fff0f5; 
+            border: 1px solid #fa709a;
+            padding: 8px;
+            border-radius: 5px;
+            margin-top: 5px;
+            font-size: 12px;
+        }
+
+        /* REVİZE EDİLEN HESAPLAMA KUTUSU */
+        .logic-box {
+            background: #f0f0ff; 
+            border: 2px dashed #6c5ce7;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 5px;
+            font-size: 13px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            line-height: 1.5;
+        }
+        .logic-box ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .logic-box li {
+            margin-bottom: 5px;
+        }
+
+        /* Ödül - Sayfanın En Altında Tam Genişlikte */
+        .reward {
+            background: linear-gradient(135deg, #fd79a8 0%, #fdcb6e 100%);
+            text-align: left-align;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 0 25px 25px 25px; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 1; 
+        }
+        .reward-text {
+            color: #d63031; 
+            font-weight: 700;
+            font-size: 14px;
+        }
+        .reward-badge {
+            font-size: 24px;
+            margin: 0 5px;
+        }
+
+/* Sadece bu bölüm için gerekli stiller */
+.logic-box-compact {
+        background: #f0f0ff; 
+        border: 2px dashed #6c5ce7;
+        padding: 10px;
+        border-radius: 5px;
+        font-size: 13px;
+        white-space: pre-wrap;
+        font-family: 'Courier New', monospace;
+        line-height: 0.75; /* Satır aralığı azaltıldı */
+        color: #333;
+    }
+    .logic-box-compact p {
+        margin: 5px 0;
+        padding-left: 10px;
+    }
+    .logic-box-compact .subheader {
+        font-weight: bold;
+        color: #5f27cd;
+        margin-top: 8px;
+        padding-left: 0;
+    }
+        /* Responsive - Küçük Ekranlarda Dikey Akış */
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+                padding: 20px 20px 10px 20px;
+            }
+            .left-panel {
+                border-right: none;
+                border-bottom: 2px dashed #ccc;
+                padding-right: 0;
+                padding-bottom: 15px;
+            }
+            .reward {
+                margin: 0 20px 20px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="card-container">
+        <div class="header">
+            <div class="badge">AŞAMA 2</div>
+            <h1 class="text-2xl font-bold text-white mb-1">
+                2. Aşama - Kodla ve Simüle Et: “Su Dengesini Koru” 💻
+            </h1>
+            <p class="text-white/80 text-xs">
+                Sistem Algoritmasını C++ ile Kodla
+            </p>
+            <div class="time-badge">⏱️ 40 Dakika</div>
+        </div>
+        
+        <div class="main-content">
+            
+            <div class="left-panel">
+                <div class="info-box scenario-box">
+                    <div class="section-title">
+                        <span>📖</span>
+                        <span>SENARYO</span>
+                    </div>
+                    <div class="text-gray-700">
+                        Birinci aşamada tasarladığın “Su Denge Sistemi” algoritmasını artık bilgisayara taşıyorsun! Şehrin barajı hâlâ kritik düzeydedir ve sistemin bilgisayar ortamında çalıştırılması gerekmektedir.
+                    </div>
+                </div>
+                
+                <div class="info-box mission-box">
+                    <div class="section-title" style="color: white;">
+                        <span>🎯</span>
+                        <span>GÖREV</span>
+                    </div>
+                    <div class="text-white/90">
+                        Planladığın akış diyagramını C++ ile Code::Blocks kullanarak kodla ve simülasyonu çalıştır.
+                    </div>
+                </div>
+
+                <div class="info-box questions-box">
+                    <div class="section-title">
+                        <span>🤔</span>
+                        <span>DÜŞÜNME SORULARI</span>
+                    </div>
+                    <div class="item-text question-icon">Rezerv %30’un altına düşerse sistem nasıl tepki veriyor?</div>
+                    <div class="item-text question-icon">Yağış miktarı arttığında mod değişiyor mu?</div>
+                    <div class="item-text question-icon">Kod, tasarladığın algoritmanda planladığın kararları doğru yansıtıyor mu?</div>
+                </div>
+
+                <div class="info-box delivery-box">
+                    <div class="section-title" style="color: #5f27cd;">
+                        <span>📤</span>
+                        <span>GÖREV TESLİMİ</span>
+                    </div>
+                    <div class="item-text delivery-icon">Kod dosyasını kaydet: GrupX_SuDenge.cpp</div>
+                    <div class="item-text delivery-icon">Sınıf WhatsApp Grubu → Takım Kaptanı(sözcüsü) gruptan dosyayı iletir</div>
+                </div>
+                
+            </div>
+            
+            <div class="right-panel">
+                <div class="section-title" style="color: #333; border-bottom: 1px dashed #ccc;">
+                    <span>📋</span>
+                    <span>GÖREV ADIMLARI</span>
+                </div>
+                
+                <div class="step-container">
+                    
+                    <div class="step-item">
+                        <div class="step-number">1</div>
+                        <div class="w-full">
+                            <div class="step-title">Programı Hazırla</div>
+                            <div class="text-gray-700">
+                                <ul class="list-disc list-inside ml-2">
+                                    <li>Code::Blocks programı açılacaktır.</li>
+                                    <li>Kullanıcıdan veya kod içinde şu değerler alınacaktır:
+                                        <div class="data-box">
+                                            Başlangıç rezervi (m³), Günlük su tüketimi (m³), Günlük yağış miktarı (m³), Günlük buharlaşma oranı (% → 0.03 şeklinde)
+                                        </div>
+                                    </li>
+                                    <li>Modu program otomatik belirleyecek (Normal / Tasarruf / Acil)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-item">
+                        <div class="step-number">2</div>
+                        <div class="w-full">
+                            <div class="step-title">Hesaplamaları Kodla</div>
+                            <div class="logic-box-compact">
+                                <br>Günlük net tüketim = Günlük Tüketim − Yağış + (Rezerv * Buharlaşma)</br>
+                                <br>Suyun dayanma süresi = Rezerv / Günlük net tüketim</br>
+                                
+                                <br class="subheader">Mod ve tüketim düzenlemesi:</br>
+                                <br>1. Rezerv > %70 → Normal Mod (Tüketim değişmeyecek)</br>
+                                <br>2. %30 ≤ Rezerv ≤ %70 → Tasarruf Modu (Tüketim %20 azaltılacak)</br>
+                                <br>3. Rezerv < %30 → Acil Mod (Tüketim %40 azaltılacak)</br>
+                                
+                                <br class="subheader">Kritik seviye uyarısı:</br>
+                                <br>Rezerv < %30 → “⚠️ Kritik Seviye: Acil Mod Aktif” mesajı gösterilecek</br>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-item">
+                        <div class="step-number">3</div>
+                        <div class="w-full">
+                            <div class="step-title">Simülasyonu Çalıştır</div>
+                            <div class="text-gray-700">
+                                <ul class="list-disc list-inside ml-2">
+                                    <li>Rezerv > 0 olduğu sürece günlük döngü çalıştırılacaktır.</li>
+                                    <li>Her gün sonunda ekrana yazılacak bilgiler:
+                                        <div class="data-box">
+                                            Gün sonu rezerv seviyesi, Günlük net tüketim, İçinde bulunan mod (Normal/Tasarruf/Acil)
+                                        </div>
+                                    </li>
+                                    <li>Rezerv < %30 olduğunda şu uyarı görünmeli:
+                                        <div class="logic-box" style="background: #fff0f5; border: 1px solid #fa709a; font-family: 'Inter', sans-serif; white-space: normal;">
+                                            ⚠️ Kritik Seviye: Acil Mod Aktif
+                                        </div>
+                                    </li>
+                                    <li>Döngü sonlandırma koşulu = Rezerv ≤ 0 olduğunda simülasyon durdurulacaktır.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Görev Kartı 3 - Test ve Analiz (Ortaokul)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Inter font for better readability */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* Arka Plan ve Merkezi Konumlandırma */
+        body {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+        
+        /* Tek Ekranlı Kompakt Kart */
+        .card-container {
+            background: white;
+            border-radius: 20px;
+            width: 95vw; 
+            max-width: 1200px; 
+            height: auto; 
+            max-height: 98vh; 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3); 
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto; 
+        }
+
+        /* Header Styling */
+        .header {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            padding: 20px 25px; 
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            border-bottom: 3px solid #e17055; 
+        }
+        
+        .time-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: white;
+            color: #e17055;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+            font-size: 13px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.3);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 14px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        /* Ana İçerik Alanı - Yatay Düzen */
+        .main-content {
+            padding: 25px;
+            display: flex;
+            gap: 20px;
+            flex-grow: 1; 
+        }
+
+        /* Paneller */
+        .left-panel {
+            flex: 1.2; 
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            border-right: 2px dashed #ccc;
+            padding-right: 15px;
+        }
+        .right-panel {
+            flex: 2; 
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Bölüm Başlıkları */
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #d63031; 
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-bottom: 5px;
+            margin-bottom: 5px;
+        }
+
+        /* İçerik Kutuları */
+        .info-box {
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 13px;
+            line-height: 1.5;
+            transition: all 0.3s ease; 
+        }
+        
+        .scenario-box {
+            background: #ffeaa7; 
+            border: 1px solid #fdcb6e; 
+        }
+        .mission-box {
+            background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);
+            color: white;
+            border: 2px solid #5f27cd; 
+        }
+
+        /* Düşünme Soruları ve Teslim Stilleri */
+        .questions-box {
+            background: #ffeaa7; 
+            border: 1px dashed #fdcb6e;
+        }
+        .delivery-box {
+            background: #e9e5ff; 
+            border-left: 5px solid #6c5ce7; 
+        }
+
+        .item-text {
+            padding: 3px 0;
+            padding-left: 20px;
+            position: relative;
+            font-size: 13px;
+            color: #4a4a4a;
+        }
+        .question-icon::before {
+            content: '💡';
+            position: absolute;
+            left: 0;
+            font-size: 12px;
+            color: #fdcb6e;
+        }
+        .delivery-icon::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            color: #f5576c; 
+        }
+        
+        /* Adım Kutuları (Right Panel) */
+        .step-container {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .step-item {
+            display: flex;
+            gap: 5px;
+            background: #f8f8f8;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 5px solid #fa709a; 
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+        
+        /* Adım Hover Efekti */
+        .step-item:hover {
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transform: translateX(3px); 
+        }
+
+        .step-number {
+            flex-shrink: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            color: white;
+            width: 30px;
+            height: 20px;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        .step-title {
+            font-weight: 700;
+            color: #333; 
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .data-box {
+            background: #fff0f5; 
+            border: 1px solid #fa709a;
+            padding: 8px;
+            border-radius: 5px;
+            margin-top: 5px;
+            font-size: 12px;
+        }
+
+        /* Hesaplama ve Mod Kutusu */
+        .logic-box {
+            background: #f0f0ff; 
+            border: 2px dashed #6c5ce7;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 5px;
+            font-size: 13px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            line-height: 1.5;
+            color: #333;
+        }
+        .logic-box ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .logic-box li {
+            margin-bottom: 5px;
+        }
+
+        /* Ödül - Sol Sütun İçinde */
+        .reward {
+            background: linear-gradient(135deg, #fd79a8 0%, #fdcb6e 100%);
+            text-align: left-align;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .reward-text {
+            color: #d63031; 
+            font-weight: 700;
+            font-size: 14px;
+        }
+        .reward-badge {
+            font-size: 24px;
+            margin: 0 5px;
+        }
+
+
+        /* Responsive - Küçük Ekranlarda Dikey Akış */
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+                padding: 20px 20px 10px 20px;
+            }
+            .left-panel {
+                border-right: none;
+                border-bottom: 2px dashed #ccc;
+                padding-right: 0;
+                padding-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="card-container">
+        <div class="header">
+            <div class="badge">AŞAMA 3</div>
+            <h1 class="text-2xl font-bold text-white mb-1">
+                3. Aşama – Programını Çalıştır, Test Et ve Sonuçları Kaydet 📊
+            </h1>
+            <p class="text-white/80 text-xs">
+                Algoritmanı Farklı Şehir Koşullarında Test Et
+            </p>
+            <div class="time-badge">⏱️ 40 Dakika</div>
+        </div>
+        
+        <div class="main-content">
+            
+            <div class="left-panel">
+                <div class="info-box scenario-box">
+                    <div class="section-title">
+                        <span>📖</span>
+                        <span>SENARYO</span>
+                    </div>
+                    <div class="text-gray-700">
+                        Şehrin barajı hâlâ kritik durumda… Artık algoritmanı farklı şehir koşullarında test etme zamanı! Her şehir için verilen verileri okuyacak ve sistemin nasıl çalıştığını göreceksin.
+                    </div>
+                </div>
+                
+                <div class="info-box mission-box">
+                    <div class="section-title" style="color: white;">
+                        <span>🎯</span>
+                        <span>GÖREV</span>
+                    </div>
+                    <div class="text-white/90">
+                        Programını çalıştır, test et ve sonuçları kaydet.
+                    </div>
+                </div>
+
+                <div class="info-box questions-box">
+                    <div class="section-title">
+                        <span>🤔</span>
+                        <span>DÜŞÜNME SORULARI</span>
+                    </div>
+                    <div class="item-text question-icon">Farklı şehirlerde suyun dayanma süresi nasıl değişiyor?</div>
+                    <div class="item-text question-icon">Hangi mod en sık aktif oluyor?</div>
+                    <div class="item-text question-icon">Kod, algoritmanda planladığın karar mekanizmasını doğru yansıtıyor mu?</div>
+                </div>
+
+                <div class="info-box delivery-box">
+                    <div class="section-title" style="color: #5f27cd;">
+                        <span>📤</span>
+                        <span>GÖREV TESLİMİ</span>
+                    </div>
+                    <div class="item-text delivery-icon">Sonuç dosyasını kaydet: GrupX_sonuclar.txt</div>
+                    <div class="item-text delivery-icon">Sınıf WhatsApp Grubu → Takım Kaptanı(sözcüsü) gruptan dosyayı iletir.</div>
+                </div>
+        
+            </div>
+            
+            <div class="right-panel">
+                <div class="section-title" style="color: #333; border-bottom: 1px dashed #ccc;">
+                    <span>📋</span>
+                    <span>GÖREV AŞAMALARI</span>
+                </div>
+                
+                <div class="step-container">
+                    
+                    <div class="step-item">
+                        <div class="step-number">1</div>
+                        <div class="w-full">
+                            <div class="step-title">Test Dosyasını Aç</div>
+                            <div class="text-gray-700">
+                                <ul class="list-disc list-inside ml-2">
+                                    <li>Grup için verilen dosyayı aç (veri1.txt)</li>
+                                    <li>Her satırdaki verileri diziye ekle:
+                                        <div class="data-box">
+                                            rezerv[i], gunluk_tuketim[i], yagis[i], buharlasma_orani[i]
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-item">
+                        <div class="step-number">2</div>
+                        <div class="w-full">
+                            <div class="step-title">Modu ve Günlük Net Tüketimi Hesapla</div>
+
+                            <div class="logic-box" style="background: #fff0f5; border: 1px solid #fa709a; font-family: 'Inter', sans-serif; white-space: normal;">
+                                <span class="font-semibold text-red-600">Her Satır için:</span>
+                                <ul class="list-disc list-inside ml-4 mt-1" style="list-style: disc;">
+                                    <li> Modu belirle (Normal / Tasarruf / Acil)</li>
+                                    <li>Günlük net tüketim = Günlük Tüketim − Yağış + (Rezerv * Buharlaşma)</li>
+                                    <li>Rezervin dayanma süresi = Rezerv / Günlük net tüketim</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-item">
+                        <div class="step-number">3</div>
+                        <div class="w-full">
+                            <div class="step-title">Sonuçları Yaz ve Kaydet</div>
+                            <div class="text-gray-700">
+                                Her şehir için ekrana yaz ve sonuclar.txt dosyasına kaydet:
+                                <div class="data-box">
+                                    Şehir adı, Mod durumu, Günlük net tüketim (m³), Suyun dayanma süresi (gün)
+                                </div>
+                                <div class="logic-box" style="background: #fff0f5; border: 1px solid #fa709a; font-family: 'Inter', sans-serif; white-space: normal;">
+                                    <span class="font-semibold text-red-600">Sistem önerisi:</span>
+                                    <ul class="list-disc list-inside ml-4 mt-1" style="list-style: disc;">
+                                        <li>> 100 gün → “Sürdürülebilir Seviye”</li>
+                                        <li>50–100 gün → “İyileştirme Gerekiyor”</li>
+                                        <li>< 50 gün → “Acil Önlem Alınmalı”</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-item">
+                        <div class="step-number">4</div>
+                        <div class="w-full">
+                            <div class="step-title">Çıktıyı Kontrol Et</div>
+                            <div class="text-gray-700">
+                                <ul class="list-disc list-inside ml-2">
+                                    <li>Her şehrin sonuçlarının mantıklı olup olmadığını kontrol et.</li>
+                                    <li>Hatalı verileri veya eksik hesaplamaları düzelt.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
