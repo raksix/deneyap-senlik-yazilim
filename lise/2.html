@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lise Görev Kartı 2 - Kodlama ve Simülasyon (Kompakt)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Inter font for better readability */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* Arka Plan ve Merkezi Konumlandırma */
+        body {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+        
+        /* Tek Ekranlı Kompakt Kart */
+        .card-container {
+            background: white;
+            border-radius: 20px;
+            width: 95vw; 
+            max-width: 1200px; 
+            height: auto; 
+            max-height: 98vh; 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3); 
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto; 
+        }
+
+        /* Header Styling */
+        .header {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            padding: 20px 25px; 
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            border-bottom: 3px solid #e17055; 
+        }
+        
+        /* Süre Butonu Stili */
+        .time-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: white;
+            color: #e17055;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+            font-size: 13px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.3);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 14px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        /* Ana İçerik Alanı - Yatay ve Kompakt Düzen */
+        .main-content {
+            padding: 25px;
+            display: flex;
+            gap: 20px;
+            flex-grow: 1; 
+        }
+
+        /* Sol ve Sağ Panelleri Yatayda Tutma */
+        .left-panel, .right-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            min-width: 300px;
+        }
+        .left-panel {
+            flex: 1; 
+            border-right: 2px dashed #ccc;
+            padding-right: 15px;
+        }
+        .right-panel {
+            flex: 1.5; /* Daha fazla yer verilebilir */
+            gap: 15px;
+        }
+
+        /* Bölüm Başlıkları */
+        .section-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: #d63031; 
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-bottom: 5px;
+            margin-bottom: 5px;
+        }
+
+        /* İçerik Kutuları */
+        .info-box {
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        
+        .scenario-box {
+            background: #ffeaa7; 
+            border: 1px solid #fdcb6e; 
+        }
+        
+        .io-box {
+            background: #fff0f5; 
+            border: 1px solid #fa709a;
+        }
+
+        .question-item, .delivery-item {
+            padding: 3px 0;
+            padding-left: 20px;
+            position: relative;
+            font-size: 13px;
+            color: #4a4a4a;
+        }
+
+        .question-item::before {
+            content: '💡';
+            position: absolute;
+            left: 0;
+            font-size: 12px;
+            color: #fdcb6e;
+        }
+        
+        .delivery-item::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            color: #f5576c; 
+        }
+
+        .delivery-box {
+            background: #e9e5ff; 
+            border-left: 5px solid #6c5ce7; 
+        }
+
+        .reward {
+            background: linear-gradient(135deg, #fd79a8 0%, #fdcb6e 100%);
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+        .reward-text {
+            color: #d63031; 
+            font-weight: 700;
+            font-size: 14px;
+        }
+        .reward-badge {
+            font-size: 24px;
+            margin: 0 5px;
+        }
+
+        /* Responsive - Küçük Ekranlarda Dikey Akış */
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            .left-panel {
+                border-right: none;
+                border-bottom: 2px dashed #ccc;
+                padding-right: 0;
+                padding-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="card-container">
+        <div class="header">
+            <div class="badge">AŞAMA 2 (LİSE)</div>
+            <h1 class="text-2xl font-bold text-white mb-1">
+                2. Aşama – Kodla ve Sürüşü Simüle Et 💻
+            </h1>
+            <p class="text-white/80 text-xs">
+                Akıllı Sürüş Algoritmasını C++ ile Kodla
+            </p>
+            <div class="time-badge">⏱️ 40 Dakika</div>
+        </div>
+        
+        <div class="main-content">
+            
+            <div class="left-panel">
+                
+                <div class="info-box scenario-box">
+                    <div class="section-title">📖 SENARYO</div>
+                    <div class="text-gray-700">
+                        Artık algoritmanı C++ ortamında gerçeğe dönüştürme zamanı! Aracının yazılımını geliştir ve sanal simülasyonda test et.
+                    </div>
+                </div>
+
+                <div class="io-box info-box">
+                    <div class="section-title" style="color: #6c5ce7;">📥 PROGRAM GİRDİLERİ</div>
+                    <ul class="list-disc list-inside ml-2 text-gray-700">
+                        <li> Batarya kapasitesi (kWh)</li>
+                        <li> Sürüş modu (ekonomik, normal, spor)</li>
+                        <li> Ortalama hız (km/s)</li>
+                    </ul>
+                </div>
+                
+                <div class="io-box info-box">
+                    <div class="section-title" style="color: #6c5ce7;">📤 PROGRAM ÇIKTILARI</div>
+                    <ul class="list-disc list-inside ml-2 text-gray-700">
+                        <li> Tahmini menzil (km)</li>
+                        <li> Tahmini sürüş süresi = menzil / hız</li>
+                        <li> Mod önerisi → menzil < 300 km ise “ekonomik moda geç” uyarısı.</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="right-panel">
+                
+                <div class="info-box" style="background: #f8f8f8; border: 1px dashed #fdcb6e;">
+                    <div class="section-title">🤔 DÜŞÜNME SORULARI</div>
+                    <div class="question-item">Kodun mod değişimini doğru hesaplıyor mu?</div>
+                    <div class="question-item">Hız ve tüketim oranlarını dinamik olarak ayarlayabiliyor mu?</div>
+                    <div class="question-item">Programın çıktıları gerçekçi mi?</div>
+                </div>
+
+                <div class="info-box delivery-box">
+                    <div class="section-title" style="color: #5f27cd;">📤 GÖREV TESLİMİ</div>
+                    <div class="delivery-item">Kod dosyasını kaydet: GrupX_AkilliSurus.cpp </div>
+                    <div class="delivery-item">Sınıf WhatsApp Grubu → Takım Kaptanı(sözcüsü) gruptan dosyayı iletir.</div>
+                </div>
+            </div>
+        </div>
+    </div>   
+</body>
+</html>

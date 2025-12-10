@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lise Görev Kartı 1 - Algoritma Tasarımı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Inter font for better readability */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* Orijinal tonlar: Pink/Red Gradient */
+        body {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            overflow: hidden; 
+        }
+        
+        /* PDF İndirme Butonu Kaldırıldı */
+        .download-btn {
+            display: none; 
+        }
+
+        @media print {
+            .download-btn {
+                display: none;
+            }
+            body {
+                background: white;
+                padding: 0;
+            }
+            .card-container {
+                box-shadow: none;
+                max-width: 100%;
+                height: auto;
+            }
+        }
+        
+        /* Global Card Styling */
+        .card-container {
+            background: white;
+            border-radius: 24px;
+            width: 98vw; 
+            max-width: 1400px;
+            height: 95vh; 
+            max-height: 850px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3); 
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Header Styling - Orijinal: Pink/Yellow Gradient */
+        .header {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            padding: 25px 30px; 
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            border-bottom: 4px solid #e17055; 
+        }
+
+        .header-icon {
+            position: absolute;
+            font-size: 80px;
+            opacity: 0.1;
+            top: 5px;
+            right: 20px;
+            color: white;
+        }
+        
+        /* Süre Butonu Stili */
+        .time-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: white;
+            color: #e17055;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            font-size: 14px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.3);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            backdrop-filter: blur(5px);
+        }
+        
+        /* Main Content Area - Horizontal Layout */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* Left Pane: Scenario, Mission, Questions, Delivery, Reward */
+        .left-pane {
+            width: 35%;
+            min-width: 300px;
+            background: #f8f8f8; 
+            padding: 30px;
+            overflow-y: auto;
+            border-right: 2px solid #fa709a; 
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        /* Right Pane: Steps */
+        .right-pane {
+            width: 65%;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        /* Scenario Styling - Orijinal: Light Yellow/Orange */
+        .scenario {
+            background: #ffeaa71a; 
+            border: 1px solid #fdcb6e; 
+            border-radius: 12px;
+            padding: 20px;
+        }
+        
+        .scenario-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #d63031; 
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .scenario-text {
+            color: #4a4a4a;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        /* Mission Styling - Orijinal: Purple/Blue Gradient */
+        .mission {
+            background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid #5f27cd; 
+            color: white;
+        }
+        
+        .mission-title {
+            font-weight: 700;
+            font-size: 17px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Steps Styling (Right Pane) */
+        .steps-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: #333; 
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .step {
+            display: flex;
+            gap: 20px;
+            background: #f8f8f8;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border-left: 5px solid #fa709a; 
+            transition: all 0.3s ease;
+        }
+        
+        .step:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transform: translateX(5px); 
+        }
+
+        /* Step Number - Orijinal: Pink/Yellow Gradient */
+        .step-number {
+            flex-shrink: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .step-content-wrapper {
+            flex-grow: 1;
+        }
+        
+        .step-title {
+            font-weight: 700;
+            color: #333; 
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        
+        .step-content {
+            color: #555;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        /* Questions Styling - Orijinal: Light Yellow/Orange */
+        .questions {
+            background: #ffeaa7; 
+            border: 1px dashed #fdcb6e;
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .questions-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #d63031; 
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .question {
+            color: #555;
+            padding: 5px 0;
+            padding-left: 20px;
+            position: relative;
+            font-size: 14px;
+        }
+        
+        .question::before {
+            content: '💡';
+            position: absolute;
+            left: 0;
+            font-size: 14px;
+        }
+
+        /* Delivery Styling - Hafif Mor/Mavi */
+        .delivery {
+            background: #e9e5ff; 
+            border-left: 5px solid #6c5ce7; 
+            padding: 20px;
+        }
+        
+        .delivery-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #5f27cd; 
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .delivery-item {
+            padding: 4px 0;
+            padding-left: 20px;
+            position: relative;
+            line-height: 1.5;
+            color: #555;
+            font-size: 14px;
+        }
+        
+        .delivery-item::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            color: #f5576c; 
+        }
+
+        /* Reward Styling - Orijinal: Pink/Yellow Gradient */
+        .reward {
+            background: linear-gradient(135deg, #fd79a8 0%, #fdcb6e 100%);
+            text-align: center;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(253,203,110,0.3);
+            margin-top: 20px;
+        }
+
+        .reward-text {
+            color: #d63031; 
+            font-weight: 700;
+            font-size: 15px;
+            text-shadow: none;
+        }
+        
+        .reward-badge {
+            font-size: 28px;
+            margin: 0 5px;
+        }
+
+        .data-box {
+            background: #fff0f5; 
+            border: 1px solid #fa709a;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 8px;
+            font-size: 13px;
+        }
+
+        /* Formül/Mod Kutusu */
+        .logic-box {
+            background: #f8f8f8; 
+            border: 2px dashed #6c5ce7;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 8px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .logic-box p {
+            margin: 5px 0;
+        }
+
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .card-container {
+                height: auto;
+                max-height: 98vh;
+                flex-direction: column;
+                overflow-y: auto;
+            }
+
+            .main-content {
+                flex-direction: column;
+                overflow: visible;
+            }
+
+            .left-pane, .right-pane {
+                width: 100%;
+                border-right: none;
+                border-bottom: 2px solid #bdc3c7;
+            }
+            
+            .right-pane {
+                border-bottom: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="card-container">
+        <div class="header">
+            <div class="header-icon">🧠</div>
+            <div class="badge">AŞAMA 1 (LİSE)</div>
+            <h1 class="text-3xl font-bold text-white mb-1">
+                1. Aşama – Akıllı Sürüş Algoritmasını Tasarla
+            </h1>
+            <p class="text-white/80 text-sm">
+                Elektrikli Araç Menzil Hesaplama Akış Diyagramını Oluştur
+            </p>
+            <div class="time-badge">⏱️ 40 Dakika</div>
+        </div>
+        
+        <div class="main-content">
+            
+            <div class="left-pane">
+                <div class="scenario">
+                    <div class="scenario-title">
+                        <span>📖</span>
+                        <span>SENARYO</span>
+                    </div>
+                    <div class="scenario-text">
+                        Bir elektrikli araç firmasının Ar-Ge ekibindesin. Şirket senden, batarya kapasitesi, doluluk yüzdesi, hız ve trafik durumuna göre aracın ne kadar yol gidebileceğini hesaplayan bir algoritma tasarlamanı istiyor. Hedefiniz, menzili maksimuma çıkaran bir akıllı sürüş sistemi geliştirmektir.
+                    </div>
+                </div>
+                
+                <div class="mission">
+                    <div class="mission-title">
+                        <span>🎯</span>
+                        <span>GÖREV</span>
+                    </div>
+                    <div class="mission-text">
+                        Verilen kurallara ve formüllere göre elektrikli aracın menzilini hesaplayacak Akıllı Sürüş Stratejisi algoritmasının akış diyagramını oluşturmak.
+                    </div>
+                </div>
+
+                <div class="questions">
+                    <div class="questions-title">
+                        <span>🤔</span>
+                        <span>DÜŞÜNME SORULARI</span>
+                    </div>
+                    <div class="question">Hız arttığında batarya ömrü ne kadar azalır?</div>
+                    <div class="question">Mod değişimi menzil üzerinde nasıl bir fark yaratır?</div>
+                    <div class="question">Hangi parametre (Mod, Hız, Trafik veya Kapasite/Yüzde) menzili en çok etkiler?</div>
+                </div>
+
+                <div class="delivery">
+                    <div class="delivery-title">
+                        <span>📤</span>
+                        <span>GÖREV TESLİMİ</span>
+                    </div>
+                    <div class="delivery-item">Draw.io üzerinde algoritmanın akış diyagramını oluştur.</div>
+                    <div class="delivery-item">Dosya adı: GrupX_AkisDiyagrami.pdf</div>
+                    <div class="delivery-item">Sınıf WhatsApp Grubu → Takım Kaptanı(sözcüsü) gruptan dosyayı iletir.</div>
+                </div>
+            </div>
+            
+            <div class="right-pane">
+                <div class="steps-title">
+                    <span>⚙️</span>
+                    <span>ALGORİTMA VERİLERİ VE KURALLAR</span>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content-wrapper">
+                        <div class="step-title">Ön Bilgilendirme ve Değişkenler</div>
+                        <div class="step-content">
+                            Algoritma için kullanılacak temel veriler ve değişkenler:
+                            <div class="data-box">
+                                <ul class="list-disc list-inside ml-2">
+                                    <li> batarya_kapasitesi (kWh): Bataryanın toplam enerji kapasitesi.</li>
+                                    <li> batarya_yuzdesi (%): Bataryanın anlık doluluk oranı.</li>
+                                    <li> trafik_durumu (true/false): Trafiğin yoğun olup olmadığı.</li>
+                                    <li> hiz (km/s): Aracın anlık/ortalama hızı.</li>
+                                    <li> temel_tuketim (kWh/km): Sürüş moduna göre başlangıç enerji harcaması.</li>
+                                    <li> gercek_tuketim (kWh/km): Hız ve trafik etkisini içeren son enerji harcaması.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content-wrapper">
+                        <div class="step-title">Mod ve Tüketim Kuralları (Temel Tüketim Hesaplaması)</div>
+                        <div class="step-content">
+                            Başlangıç enerji harcaması (temel_tuketim) batarya yüzdesine göre belirlenir:
+                            <div class="logic-box">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th class="text-left font-semibold pr-4">Koşul</th>
+                                            <th class="text-left font-semibold pr-4">Sürüş Modu (mod)</th>
+                                            <th class="text-left font-semibold">temel_tuketim(kWh/km)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>batarya_yuzdesi < 20</td>
+                                            <td>Ekonomik</td>
+                                            <td>0.12</td>
+                                        </tr>
+                                        <tr>
+                                            <td>batarya_yuzdesi > 70</td>
+                                            <td>Performans</td>
+                                            <td>0.18</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Diğer (20% &le; batarya_yuzdesi &le; 70%)</td>
+                                            <td>Normal (Standart durum)</td>
+                                            <td>0.15</td>
+                                        </tr>
+                                        <tr>
+                                            <td>trafik_durumu = true</td>
+                                            <td>Normal (Yoğun trafikte)</td>
+                                            <td>0.15</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content-wrapper">
+                        <div class="step-title">Hız ve Trafik Etkisi (Gerçek Tüketim Hesaplaması)</div>
+                        <div class="step-content">
+                            Hız Etkisi Formülü: Hızın tüketim üzerindeki etkisi hesaplanır.
+                            <div class="logic-box">
+                                gercek_tuketim = temel_tuketim * (1 + (hiz - 80) / 200)
+                                <p>Bu formül, hıza göre tüketimi artırır veya azaltır:</p>
+                                <ul class="list-disc list-inside ml-4">
+                                    <li>Hız = 80 km/s &rarr; değişim yok</li>
+                                    <li>Hız = 100 km/s &rarr; %10 artış</li>
+                                    <li>Hız = 60 km/s &rarr; %10 azalma</li>
+                                </ul>
+                            </div>
+                            
+                            Trafik Etkisi: Hız etkisinden sonra, yoğun trafik ek %15 tüketim getirir.
+                            <div class="logic-box mt-3">
+                                EĞER trafik_durumu = true OLURSA<br>
+                                gercek_tuketim = gercek_tuketim * 1.15
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content-wrapper">
+                        <div class="step-title">Menzil Hesabı ve Çıktı</div>
+                        <div class="step-content">
+                            Son olarak, mevcut enerjiye göre tahmini menzil hesaplanır:
+                            <div class="logic-box">
+                                <p> Kalan Batarya (kWh): kalan_batarya = batarya_kapasitesi * (batarya_yuzdesi / 100)</p>
+                                <p> Tahmini Menzil (km): menzil = kalan_batarya / gercek_tuketim</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>   
+</body>
+</html>

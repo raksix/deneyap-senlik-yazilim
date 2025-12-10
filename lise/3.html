@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lise Görev Kartı 3 - Test ve Analiz (Nihai)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Inter font for better readability */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* Arka Plan ve Merkezi Konumlandırma */
+        body {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+        
+        /* Tek Ekranlı Kompakt Kart */
+        .card-container {
+            background: white;
+            border-radius: 20px;
+            width: 95vw; 
+            max-width: 1200px; 
+            height: auto; 
+            max-height: 98vh; 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3); 
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto; 
+        }
+
+        /* Header Styling */
+        .header {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            padding: 20px 25px; 
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            border-bottom: 3px solid #e17055; 
+        }
+        
+        /* Süre Butonu Stili */
+        .time-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: white;
+            color: #e17055;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+            font-size: 13px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.3);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 14px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        /* Ana İçerik Alanı - Yatay ve Kompakt Düzen */
+        .main-content {
+            padding: 25px;
+            display: flex;
+            gap: 20px;
+            flex-grow: 1; 
+        }
+
+        /* Sol ve Sağ Panelleri Yatayda Tutma */
+        .left-panel {
+            flex: 1; 
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            border-right: 2px dashed #ccc;
+            padding-right: 15px;
+        }
+        .right-panel {
+            flex: 1.5; 
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        /* Bölüm Başlıkları */
+        .section-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: #d63031; 
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding-bottom: 5px;
+            margin-bottom: 5px;
+        }
+
+        /* İçerik Kutuları */
+        .info-box {
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 13px;
+            line-height: 1.5;
+            transition: all 0.3s ease; 
+        }
+        
+        .scenario-box {
+            background: #ffeaa7; 
+            border: 1px solid #fdcb6e; 
+        }
+        
+        .questions-box {
+            background: #f8f8f8; 
+            border: 1px dashed #fdcb6e;
+        }
+
+        .delivery-box {
+            background: #e9e5ff; 
+            border-left: 5px solid #6c5ce7; 
+        }
+        
+        /* Etkileşim: Kutuların Üzerine Gelme Efekti */
+        .info-box:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        .item-text {
+            padding: 3px 0;
+            padding-left: 20px;
+            position: relative;
+            font-size: 13px;
+            color: #4a4a4a;
+        }
+
+        .question-icon::before {
+            content: '💡';
+            position: absolute;
+            left: 0;
+            font-size: 12px;
+            color: #fdcb6e;
+        }
+        
+        .delivery-icon::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            color: #f5576c; 
+        }
+
+        .reward {
+            background: linear-gradient(135deg, #fd79a8 0%, #fdcb6e 100%);
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 10px;
+            cursor: pointer; 
+            transition: all 0.3s ease;
+        }
+        
+        /* Etkileşim: Ödül Kutusu Üzerine Gelme Efekti */
+        .reward:hover {
+            box-shadow: 0 5px 20px rgba(253,121,168,0.5);
+            transform: scale(1.02);
+        }
+
+        .reward-text {
+            color: #d63031; 
+            font-weight: 700;
+            font-size: 14px;
+        }
+        .reward-badge {
+            font-size: 24px;
+            margin: 0 5px;
+        }
+        
+        /* Adım Kutuları (Step) için özel stiller */
+        .step-title {
+            font-weight: 700;
+            color: #5f27cd; 
+            font-size: 16px;
+            margin-bottom: 3px;
+        }
+        .step-box-item {
+            display: flex;
+            gap: 2px;
+            align-items: flex-start;
+        }
+        .step-number-icon {
+            flex-shrink: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            color: white;
+            width: 25px;
+            height: 5px;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 14px;
+            margin-top: 3px;
+        }
+        .code-snippet {
+            background: #2d3436; 
+            color: #dfe6e9; 
+            padding: 3;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+            margin-top: 0px;
+        }
+        .data-box {
+            background: #f0f0ff; 
+            border: 1px dashed #6c5ce7;
+            padding: 8px;
+            border-radius: 5px;
+            margin-top: 5px;
+            font-size: 13px;
+            color: #333;
+        }
+
+        /* Responsive - Küçük Ekranlarda Dikey Akış */
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            .left-panel {
+                border-right: none;
+                border-bottom: 2px dashed #ccc;
+                padding-right: 0;
+                padding-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="card-container">
+        <div class="header">
+            <div class="badge">AŞAMA 3 (LİSE)</div>
+            <h1 class="text-2xl font-bold text-white mb-1">
+                3. Aşama – Test Et, Kaydet, Analiz Et 📊
+            </h1>
+            <p class="text-white/80 text-xs">
+                Sürüş Senaryolarını Simüle Et ve Sonuçları Analiz Et
+            </p>
+            <div class="time-badge">⏱️ 40 Dakika</div>
+        </div>
+        
+        <div class="main-content">
+            
+            <div class="left-panel">
+                
+                <div class="info-box scenario-box">
+                    <div class="section-title">📖 SENARYO</div>
+                    <div class="text-gray-700">
+                        Artık geliştirdiğin yazılımı farklı sürüş senaryolarında test etme zamanı! Her grup, kendilerine verilen dosyalardaki batarya, hız ve mod verilerini kullanarak menzil tahminlerini analiz eder.
+                    </div>
+                </div>
+
+                <div class="info-box questions-box">
+                    <div class="section-title">🤔 DÜŞÜNME SORULARI</div>
+                    <div class="item-text question-icon">Hangi senaryo en verimli sürüşü sağladı?</div>
+                    <div class="item-text question-icon">Farklı modların ortalama enerji tüketimine etkisi nedir?</div>
+                    <div class="item-text question-icon">Koddaki karar yapıları doğru şekilde çalıştı mı?</div>
+                </div>
+                
+                <div class="info-box delivery-box">
+                    <div class="section-title" style="color: #5f27cd;">📤 GÖREV TESLİMİ</div>
+                    <div class="item-text delivery-icon">Sonuç dosyasını kaydet: GrupX_Sonuclar.txt</div>
+                    <div class="item-text delivery-icon">Sınıf WhatsApp Grubu → Takım Kaptanı(sözcüsü) gruptan dosyayı iletir.</div>
+                </div>
+
+        
+            </div>
+            
+            <div class="right-panel">
+                <div class="section-title" style="color: #333; border-bottom: 1px solid #ccc;">📋 GÖREV ADIMLARI</div>
+                
+                <div class="info-box" style="border-left: 5px solid #fa709a;">
+                    <div class="step-box-item">
+                        <div class="step-number-icon">1</div>
+                        <div>
+                            <div class="step-title">Test Dosyasını Aç</div>
+                            <div class="text-gray-700">Grup için verilen dosyayı aç (veri1.txt)</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-box" style="border-left: 5px solid #fa709a;">
+                    <div class="step-box-item">
+                        <div class="step-number-icon">2</div>
+                        <div>
+                            <div class="step-title">Verileri Dizilere Ekle</div>
+                            <div class="text-gray-700">Her satırdaki verileri uygun dizilere ekle:</div>
+                            <div class="data-box">
+                                  batarya[i],        hiz[i],       mod[i]
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-box" style="border-left: 5px solid #fa709a;">
+                    <div class="step-box-item">
+                        <div class="step-number-icon">3</div>
+                        <div>
+                            <div class="step-title">Her Satır İçin Hesapla</div>
+                            <div class="text-gray-700">Dizideki her veri seti için aşağıdaki hesaplamaları yap:</div>
+                            <div class="data-box">
+                            <br>Temel tüketimi mod’a göre belirle</br> 
+                            <br>Gerçek tüketimi bul:</br>                  
+                            <br>gercekTuketim = temelTuketim * (1 + (hiz[i] - 80) / 200)</br>
+                            <br> Menzili hesapla: menzil[i] = batarya[i] / gercekTuketim</br> 
+                            
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-box" style="border-left: 5px solid #fa709a;">
+                    <div class="step-box-item">
+                        <div class="step-number-icon">4</div>
+                        <div>
+                            <div class="step-title">Sonuçları Yaz ve Kaydet</div>
+                            <div class="text-gray-700">Tüm hesaplanan sonuçları ekrana yazdır ve aşağıdaki dosyaya kaydet:</div>
+                            <div class="data-box">
+                                Dosya Adı: `sonuclar.txt`
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
